@@ -13,7 +13,34 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </div>
         <p class="text-xs sm:text-sm text-slate-500 mb-0">Manage customer accounts, contact details, addresses, and dispensary eligibility status.</p>
     </div>
+    <div class="flex items-center gap-2.5">
+        <a href="<?php echo base_url('customers/create'); ?>" class="btn btn-emerald text-xs sm:text-sm font-semibold rounded-xl px-4 py-2.5 flex items-center gap-2 shadow-md shadow-emerald-600/20 hover:shadow-lg transition text-decoration-none">
+            <i class="fa-solid fa-plus"></i>
+            <span>Add Customer</span>
+        </a>
+    </div>
 </div>
+
+<!-- Flash Notifications -->
+<?php if ($this->session->flashdata('success')): ?>
+    <div class="alert alert-success alert-dismissible fade show text-xs sm:text-sm rounded-2xl border-emerald-200 bg-emerald-50 text-emerald-800 mb-6 p-4" role="alert">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+            <span><?php echo $this->session->flashdata('success'); ?></span>
+        </div>
+        <button type="button" class="btn-close text-xs" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
+
+<?php if ($this->session->flashdata('error')): ?>
+    <div class="alert alert-danger alert-dismissible fade show text-xs sm:text-sm rounded-2xl border-rose-200 bg-rose-50 text-rose-800 mb-6 p-4" role="alert">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-circle-exclamation text-rose-600 text-base"></i>
+            <span><?php echo $this->session->flashdata('error'); ?></span>
+        </div>
+        <button type="button" class="btn-close text-xs" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
 
 <!-- SEARCH & STATUS FILTER CARD -->
 <div class="app-card p-4 sm:p-5 mb-6">

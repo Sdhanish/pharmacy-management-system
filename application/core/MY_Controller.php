@@ -53,20 +53,12 @@ class MY_Controller extends CI_Controller {
      * @return string|void
      */
     protected function render_view($view_path, $data = array(), $return = FALSE) {
-        // Load Cart Summary for Navbar Mini Cart Counter
-        $cart_summary = array('total_items' => 0, 'subtotal' => 0, 'items' => array());
-        if ($this->session->userdata('logged_in') === TRUE) {
-            $this->load->model('Cart_model');
-            $cart_summary = $this->Cart_model->get_cart_summary($this->session->userdata('user_id'));
-        }
-
         $view_data = array_merge($data, array(
             'content_view'  => $view_path,
             'page_title'    => isset($data['page_title']) ? $data['page_title'] : $this->page_title,
             'active_menu'   => isset($data['active_menu']) ? $data['active_menu'] : $this->active_menu,
             'breadcrumbs'   => isset($data['breadcrumbs']) ? $data['breadcrumbs'] : $this->breadcrumbs,
             'current_user'  => isset($data['current_user']) ? $data['current_user'] : $this->current_user,
-            'cart_summary'  => isset($data['cart_summary']) ? $data['cart_summary'] : $cart_summary,
         ));
 
         return $this->load->view('layouts/master', $view_data, $return);

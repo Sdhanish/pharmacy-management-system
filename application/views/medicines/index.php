@@ -76,16 +76,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <!-- MEDICINES TABLE -->
 <div class="app-card p-0 overflow-hidden mb-6">
     <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0 text-xs sm:text-sm">
+        <table class="table table-hover align-middle mb-0 text-xs sm:text-sm" id="medicinesTable">
             <thead class="table-light text-[11px] text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200">
                 <tr>
-                    <th class="py-3.5 pl-4">Medicine</th>
-                    <th class="py-3.5">Category</th>
-                    <th class="py-3.5">Supplier / Brand</th>
-                    <th class="py-3.5 text-end">Price</th>
-                    <th class="py-3.5 text-center">Stock Qty</th>
-                    <th class="py-3.5">Expiry Date</th>
-                    <th class="py-3.5 text-center">Status</th>
+                    <th class="sortable py-3.5 pl-4" data-sort="text">Medicine</th>
+                    <th class="sortable py-3.5" data-sort="text">Category</th>
+                    <th class="sortable py-3.5" data-sort="text">Supplier / Brand</th>
+                    <th class="sortable py-3.5 text-end" data-sort="number">Price</th>
+                    <th class="sortable py-3.5 text-center" data-sort="number">Stock Qty</th>
+                    <th class="sortable py-3.5" data-sort="date">Expiry Date</th>
+                    <th class="sortable py-3.5 text-center" data-sort="text">Status</th>
                     <th class="py-3.5 text-end pr-4">Actions</th>
                 </tr>
             </thead>
@@ -198,16 +198,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <!-- Actions -->
                             <td class="py-3 text-end pr-4">
                                 <div class="inline-flex items-center gap-1">
-                                    <form action="<?php echo base_url('cart/add'); ?>" method="POST" class="inline m-0">
-                                        <input type="hidden" name="medicine_id" value="<?php echo $med['id']; ?>">
-                                        <input type="hidden" name="quantity" value="1">
-                                        <button type="submit" 
-                                                class="btn btn-sm btn-emerald p-1.5 rounded-lg text-white shadow-2xs" 
-                                                title="Add to Cart" 
-                                                <?php echo ($stock <= 0) ? 'disabled' : ''; ?>>
-                                            <i class="fa-solid fa-cart-plus text-xs"></i>
-                                        </button>
-                                    </form>
                                     <a href="<?php echo base_url('medicines/show/' . $med['id']); ?>" 
                                        class="btn btn-sm btn-light p-1.5 rounded-lg text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 border border-slate-200" 
                                        title="View Details">

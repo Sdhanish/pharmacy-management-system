@@ -20,6 +20,16 @@ $this->load->view('layouts/sidebar', $layout_data);
 <!-- Main Content Wrapper -->
 <div id="main-wrapper" class="flex-1 flex flex-col bg-slate-50 min-h-screen">
 
+    <!-- Global Floating Toast Container -->
+    <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Hidden Flash Notification Trigger for app.js Toast System -->
+    <?php if ($this->session->flashdata('success') || $this->session->flashdata('error')): ?>
+        <div id="flash-toast-trigger" class="hidden" 
+             data-success="<?php echo html_escape($this->session->flashdata('success')); ?>" 
+             data-error="<?php echo html_escape($this->session->flashdata('error')); ?>"></div>
+    <?php endif; ?>
+
     <!-- Top Navigation -->
     <?php $this->load->view('layouts/topbar', $layout_data); ?>
 

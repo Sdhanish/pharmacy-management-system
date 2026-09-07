@@ -29,16 +29,16 @@ class Stock extends MY_Controller {
      * Read Stock Purchases List with Current Stock Column, Search, and Pagination
      */
     public function index() {
-        $search = $this->input->get('search', TRUE);
+        $search      = $this->input->get('search', TRUE);
         $supplier_id = $this->input->get('supplier_id', TRUE);
 
-        $per_page = 8;
-        $page = (int) $this->input->get('page');
-        $offset = ($page > 0) ? ($page - 1) * $per_page : 0;
+        $per_page = 10;
+        $page     = (int) $this->input->get('page');
+        $offset   = ($page > 0) ? ($page - 1) * $per_page : 0;
 
+        // --- Purchase Orders Tab ---
         $total_rows = $this->Stock_model->count_purchases($search, $supplier_id);
 
-        // Configure Pagination
         $config['base_url']             = base_url('stock');
         $config['total_rows']           = $total_rows;
         $config['per_page']             = $per_page;
@@ -46,8 +46,6 @@ class Stock extends MY_Controller {
         $config['query_string_segment'] = 'page';
         $config['use_page_numbers']     = TRUE;
         $config['reuse_query_string']   = TRUE;
-
-        // Bootstrap 5 & Tailwind Pagination Styling
         $config['full_tag_open']   = '<nav aria-label="Page navigation"><ul class="pagination pagination-sm mb-0 gap-1 justify-content-center justify-content-md-end">';
         $config['full_tag_close']  = '</ul></nav>';
         $config['first_link']      = '&laquo; First';
@@ -67,16 +65,22 @@ class Stock extends MY_Controller {
         $config['num_tag_open']    = '<li class="page-item">';
         $config['num_tag_close']   = '</li>';
         $config['attributes']      = array('class' => 'page-link rounded-lg text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 border-slate-200');
-
         $this->pagination->initialize($config);
 
         $purchases = $this->Stock_model->get_purchases($per_page, $offset, $search, $supplier_id);
         $suppliers = $this->Supplier_model->get_active_suppliers();
 
+        // --- Inventory Overview Tab: ALL medicines with current stock ---
+        $inv_search     = $this->input->get('inv_search', TRUE);
+        $inv_total      = $this->Stock_model->count_medicine_inventory($inv_search);
+        $inv_page       = (int) $this->input->get('inv_page');
+        $inv_offset     = ($inv_page > 0) ? ($inv_page - 1) * $per_page : 0;
+        $inventory_list = $this->Stock_model->get_medicine_inventory_overview($per_page, $inv_offset, $inv_search);
+
         $data = array(
             'page_title'       => 'Stock Management',
             'active_menu'      => 'stock',
-            'breadcrumbs'      => array('Stock Purchases' => ''),
+            'breadcrumbs'      => array('Stock Management' => ''),
             'purchases'        => $purchases,
             'suppliers'        => $suppliers,
             'search'           => $search,
@@ -84,7 +88,12 @@ class Stock extends MY_Controller {
             'total_rows'       => $total_rows,
             'pagination_links' => $this->pagination->create_links(),
             'offset'           => $offset,
-            'per_page'         => $per_page
+            'per_page'         => $per_page,
+            // Inventory overview
+            'inventory_list'   => $inventory_list,
+            'inv_total'        => $inv_total,
+            'inv_search'       => $inv_search,
+            'inv_offset'       => $inv_offset,
         );
 
         $this->render_view('stock/index', $data);

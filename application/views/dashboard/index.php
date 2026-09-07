@@ -20,11 +20,11 @@ $user_display_name = isset($current_user['name']) ? $current_user['name'] : 'Doc
             </p>
         </div>
         <div class="flex flex-wrap items-center gap-3">
-            <a href="<?php echo base_url('medicines'); ?>" class="btn btn-light text-emerald-800 font-semibold px-4 py-2.5 rounded-xl shadow-sm hover:bg-emerald-50 transition flex items-center gap-2 text-xs sm:text-sm border-0">
+            <a href="<?php echo base_url('medicines/create'); ?>" class="btn btn-light text-emerald-800 font-semibold px-4 py-2.5 rounded-xl shadow-sm hover:bg-emerald-50 transition flex items-center gap-2 text-xs sm:text-sm border-0 text-decoration-none">
                 <i class="fa-solid fa-plus text-emerald-600"></i>
                 <span>Add Medicine</span>
             </a>
-            <a href="<?php echo base_url('stock'); ?>" class="btn bg-emerald-900/60 text-white font-semibold px-4 py-2.5 rounded-xl hover:bg-emerald-900/80 transition flex items-center gap-2 text-xs sm:text-sm border border-emerald-400/30">
+            <a href="<?php echo base_url('stock/create'); ?>" class="btn bg-emerald-900/60 text-white font-semibold px-4 py-2.5 rounded-xl hover:bg-emerald-900/80 transition flex items-center gap-2 text-xs sm:text-sm border border-emerald-400/30 text-decoration-none">
                 <i class="fa-solid fa-boxes-stacked text-emerald-300"></i>
                 <span>New Stock In</span>
             </a>
@@ -54,7 +54,7 @@ $user_display_name = isset($current_user['name']) ? $current_user['name'] : 'Doc
         </div>
         <p class="text-xs text-slate-400 mt-2 mb-0 flex items-center justify-between">
             <span>Active SKUs</span>
-            <a href="<?php echo base_url('medicines'); ?>" class="text-emerald-600 font-semibold hover:underline text-[11px]">View all &rarr;</a>
+            <a href="<?php echo base_url('medicines'); ?>" class="text-emerald-600 font-semibold hover:underline text-[11px] text-decoration-none">View all &rarr;</a>
         </p>
     </div>
 
@@ -74,7 +74,7 @@ $user_display_name = isset($current_user['name']) ? $current_user['name'] : 'Doc
         </div>
         <p class="text-xs text-slate-400 mt-2 mb-0 flex items-center justify-between">
             <span>All inventory batches</span>
-            <a href="<?php echo base_url('stock'); ?>" class="text-cyan-600 font-semibold hover:underline text-[11px]">Manage &rarr;</a>
+            <a href="<?php echo base_url('stock'); ?>" class="text-cyan-600 font-semibold hover:underline text-[11px] text-decoration-none">Manage &rarr;</a>
         </p>
     </div>
 
@@ -98,7 +98,7 @@ $user_display_name = isset($current_user['name']) ? $current_user['name'] : 'Doc
         </div>
         <p class="text-xs text-slate-400 mt-2 mb-0 flex items-center justify-between">
             <span>Below safety margin</span>
-            <a href="<?php echo base_url('stock'); ?>" class="text-amber-600 font-semibold hover:underline text-[11px]">Restock &rarr;</a>
+            <a href="<?php echo base_url('reports?type=low_stock'); ?>" class="text-amber-600 font-semibold hover:underline text-[11px] text-decoration-none">Restock &rarr;</a>
         </p>
     </div>
 
@@ -122,7 +122,7 @@ $user_display_name = isset($current_user['name']) ? $current_user['name'] : 'Doc
         </div>
         <p class="text-xs text-slate-400 mt-2 mb-0 flex items-center justify-between">
             <span>Past expiration date</span>
-            <a href="<?php echo base_url('reports'); ?>" class="text-rose-600 font-semibold hover:underline text-[11px]">Audit &rarr;</a>
+            <a href="<?php echo base_url('expiry/expired'); ?>" class="text-rose-600 font-semibold hover:underline text-[11px] text-decoration-none">Audit &rarr;</a>
         </p>
     </div>
 
@@ -142,8 +142,71 @@ $user_display_name = isset($current_user['name']) ? $current_user['name'] : 'Doc
         </div>
         <p class="text-xs text-slate-400 mt-2 mb-0 flex items-center justify-between">
             <span>Requires attention</span>
-            <a href="<?php echo base_url('stock-history'); ?>" class="text-purple-600 font-semibold hover:underline text-[11px]">Inspect &rarr;</a>
+            <a href="<?php echo base_url('expiry/expiring-30-days'); ?>" class="text-purple-600 font-semibold hover:underline text-[11px] text-decoration-none">Inspect &rarr;</a>
         </p>
+    </div>
+
+</div>
+
+<!-- CHART.JS ANALYTICS VISUALIZATION SECTION -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+    
+    <!-- LEFT 2 COLS: 7-DAY STOCK VELOCITY AREA CHART -->
+    <div class="lg:col-span-2 app-card p-5 sm:p-6 flex flex-col justify-between">
+        <div>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-chart-line text-base"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-base font-bold text-slate-900 mb-0.5">Stock Movement & Sales Velocity</h4>
+                        <p class="text-xs text-slate-400 mb-0">7-Day comparison of stock receipts (inflow) vs dispensations (sales)</p>
+                    </div>
+                </div>
+                <span class="badge bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs px-2.5 py-1 rounded-full font-semibold self-start sm:self-auto">
+                    Live Velocity
+                </span>
+            </div>
+            
+            <div class="relative h-64 sm:h-72 w-full">
+                <canvas id="stockTrendsChart"></canvas>
+            </div>
+        </div>
+
+        <div class="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+            <span class="flex items-center gap-2">
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Stock Received
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-blue-500 ml-2"></span> Stock Dispensed
+            </span>
+            <a href="<?php echo base_url('reports?type=stock_activity'); ?>" class="text-emerald-600 font-semibold hover:underline text-decoration-none">View full audit ledger &rarr;</a>
+        </div>
+    </div>
+
+    <!-- RIGHT 1 COL: INVENTORY CATEGORY ALLOCATION DOUGHNUT CHART -->
+    <div class="app-card p-5 sm:p-6 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-chart-pie text-base"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-base font-bold text-slate-900 mb-0.5">Category Allocation</h4>
+                        <p class="text-xs text-slate-400 mb-0">Stock share per therapeutic class</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative h-64 sm:h-72 w-full flex items-center justify-center">
+                <canvas id="categoryDistributionChart"></canvas>
+            </div>
+        </div>
+
+        <div class="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+            <span>Aggregated by active categories</span>
+            <a href="<?php echo base_url('categories'); ?>" class="text-teal-600 font-semibold hover:underline text-decoration-none">Manage &rarr;</a>
+        </div>
     </div>
 
 </div>
@@ -175,10 +238,10 @@ $user_display_name = isset($current_user['name']) ? $current_user['name'] : 'Doc
                 <table class="table table-hover align-middle mb-0 text-xs sm:text-sm">
                     <thead class="table-light text-[11px] text-slate-500 font-bold uppercase tracking-wider">
                         <tr>
-                            <th class="border-0 rounded-start py-3 pl-3">Medicine</th>
-                            <th class="border-0 text-center py-3">Action</th>
-                            <th class="border-0 text-center py-3">Quantity</th>
-                            <th class="border-0 text-end rounded-end py-3 pr-3">Date</th>
+                            <th class="sortable border-0 rounded-start py-3 pl-3" data-sort="text">Medicine</th>
+                            <th class="sortable border-0 text-center py-3" data-sort="text">Action</th>
+                            <th class="sortable border-0 text-center py-3" data-sort="number">Quantity</th>
+                            <th class="sortable border-0 text-end rounded-end py-3 pr-3" data-sort="date">Date</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
@@ -286,9 +349,15 @@ $user_display_name = isset($current_user['name']) ? $current_user['name'] : 'Doc
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="4" class="py-8 text-center text-slate-400">
-                                    <i class="fa-solid fa-inbox text-2xl mb-2 text-slate-300"></i>
-                                    <p class="mb-0 text-xs">No stock transactions recorded yet.</p>
+                                <td colspan="4" class="py-12 text-center text-slate-400">
+                                    <div class="empty-state-icon-wrap">
+                                        <i class="fa-solid fa-inbox text-2xl"></i>
+                                    </div>
+                                    <h5 class="text-sm font-bold text-slate-700 mb-1">No Recent Activity</h5>
+                                    <p class="text-xs text-slate-400 mb-3">No stock receipts or sales transactions have been logged recently.</p>
+                                    <a href="<?php echo base_url('stock/create'); ?>" class="btn btn-emerald btn-sm rounded-xl px-3.5 py-1.5 text-xs font-semibold">
+                                        <i class="fa-solid fa-plus mr-1"></i> Receive Stock
+                                    </a>
                                 </td>
                             </tr>
                         <?php endif; ?>
@@ -299,47 +368,77 @@ $user_display_name = isset($current_user['name']) ? $current_user['name'] : 'Doc
 
         <div class="pt-4 mt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
             <span>Displaying latest <?php echo count($recent_activities ?? []); ?> activities</span>
-            <a href="<?php echo base_url('stock-history'); ?>" class="text-emerald-600 font-semibold hover:underline">View full ledger &rarr;</a>
+            <a href="<?php echo base_url('stock-history'); ?>" class="text-emerald-600 font-semibold hover:underline text-decoration-none">View full ledger &rarr;</a>
         </div>
     </div>
 
     <!-- RIGHT 1 COL: INVENTORY HEALTH & ALERTS -->
     <div class="space-y-6">
         
-        <!-- Low Stock Notice Panel -->
+        <!-- Low Stock Notice Panel with Animated Progress Bars -->
         <div class="app-card p-5">
             <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
                 <div class="flex items-center gap-2">
                     <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
                     <h5 class="text-sm font-bold text-slate-900 mb-0">Low Stock Priority</h5>
                 </div>
-                <a href="<?php echo base_url('stock'); ?>" class="text-[11px] font-semibold text-amber-600 hover:underline">Restock All</a>
+                <a href="<?php echo base_url('reports?type=low_stock'); ?>" class="text-[11px] font-semibold text-amber-600 hover:underline text-decoration-none">Restock All</a>
             </div>
 
             <?php if (!empty($low_stock_items)): ?>
-                <div class="space-y-2.5">
+                <div class="space-y-3.5">
                     <?php foreach ($low_stock_items as $low_item): ?>
-                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-amber-50/60 border border-amber-200/70">
-                            <div>
-                                <p class="text-xs font-bold text-slate-800 mb-0.5">
-                                    <?php echo html_escape($low_item['name']); ?>
-                                </p>
-                                <p class="text-[10px] text-slate-500 mb-0">
-                                    <?php echo html_escape($low_item['strength'] ?? ''); ?> &bull; Min Alert: <?php echo $low_item['min_stock_alert']; ?>
-                                </p>
-                            </div>
-                            <div class="text-end">
-                                <span class="badge bg-rose-600 text-white font-mono text-xs font-bold px-2 py-1 rounded-lg">
-                                    <?php echo $low_item['current_stock']; ?> Left
+                        <?php
+                        $curr_stock = (int)$low_item['current_stock'];
+                        $min_alert = (int)($low_item['min_stock_alert'] ?: 10);
+                        // Progress calculation (capped at 100%)
+                        $percent = min(100, max(5, round(($curr_stock / $min_alert) * 100)));
+                        
+                        // Color styling based on remaining percentage
+                        if ($percent <= 30) {
+                            $fill_class = 'fill-rose';
+                            $badge_class = 'bg-rose-100 text-rose-800 border-rose-200';
+                        } elseif ($percent <= 70) {
+                            $fill_class = 'fill-amber';
+                            $badge_class = 'bg-amber-100 text-amber-800 border-amber-200';
+                        } else {
+                            $fill_class = 'fill-emerald';
+                            $badge_class = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+                        }
+                        ?>
+                        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <div>
+                                    <p class="text-xs font-bold text-slate-900 mb-0">
+                                        <?php echo html_escape($low_item['name']); ?>
+                                    </p>
+                                    <span class="text-[10px] text-slate-400 font-medium">
+                                        <?php echo html_escape($low_item['category_name'] ?: 'General'); ?> &bull; Threshold: <?php echo $min_alert; ?> units
+                                    </span>
+                                </div>
+                                <span class="badge <?php echo $badge_class; ?> border font-mono text-[11px] font-bold px-2 py-0.5 rounded-lg">
+                                    <?php echo $curr_stock; ?> units
                                 </span>
+                            </div>
+                            
+                            <!-- Low Stock Progress Bar -->
+                            <div class="stock-progress-track mt-2">
+                                <div class="stock-progress-fill <?php echo $fill_class; ?>" style="width: <?php echo $percent; ?>%;"></div>
+                            </div>
+                            <div class="flex items-center justify-between text-[10px] text-slate-400 font-mono mt-1">
+                                <span>Stock Level</span>
+                                <span class="font-bold <?php echo ($percent <= 30) ? 'text-rose-600' : 'text-amber-600'; ?>"><?php echo $percent; ?>% of safety margin</span>
                             </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
             <?php else: ?>
-                <div class="p-4 text-center text-xs text-slate-400 bg-slate-50 rounded-xl">
-                    <i class="fa-solid fa-check-circle text-emerald-500 text-lg mb-1"></i>
-                    <p class="mb-0 font-medium text-slate-600">All medicines have adequate stock levels.</p>
+                <div class="empty-state-card py-6">
+                    <div class="empty-state-icon-wrap w-12 h-12 text-lg">
+                        <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                    </div>
+                    <h6 class="text-xs font-bold text-slate-700 mb-1">Stock Levels Adequate</h6>
+                    <p class="text-[11px] text-slate-400 mb-0">No medicines are currently running below safety alert thresholds.</p>
                 </div>
             <?php endif; ?>
         </div>
@@ -351,7 +450,7 @@ $user_display_name = isset($current_user['name']) ? $current_user['name'] : 'Doc
                     <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
                     <h5 class="text-sm font-bold text-slate-900 mb-0">Expiring (&le; 30 Days)</h5>
                 </div>
-                <a href="<?php echo base_url('reports'); ?>" class="text-[11px] font-semibold text-purple-600 hover:underline">Expiry Report</a>
+                <a href="<?php echo base_url('expiry'); ?>" class="text-[11px] font-semibold text-purple-600 hover:underline text-decoration-none">View All Alerts</a>
             </div>
 
             <?php if (!empty($expiring_soon_items)): ?>
@@ -375,9 +474,12 @@ $user_display_name = isset($current_user['name']) ? $current_user['name'] : 'Doc
                     <?php endforeach; ?>
                 </div>
             <?php else: ?>
-                <div class="p-4 text-center text-xs text-slate-400 bg-slate-50 rounded-xl">
-                    <i class="fa-solid fa-calendar-check text-emerald-500 text-lg mb-1"></i>
-                    <p class="mb-0 font-medium text-slate-600">No batches expiring within the next 30 days.</p>
+                <div class="empty-state-card py-6">
+                    <div class="empty-state-icon-wrap w-12 h-12 text-lg">
+                        <i class="fa-solid fa-calendar-check text-emerald-500"></i>
+                    </div>
+                    <h6 class="text-xs font-bold text-slate-700 mb-1">No Expiry Risks</h6>
+                    <p class="text-[11px] text-slate-400 mb-0">No batches expiring within the next 30 days.</p>
                 </div>
             <?php endif; ?>
         </div>
@@ -385,3 +487,12 @@ $user_display_name = isset($current_user['name']) ? $current_user['name'] : 'Doc
     </div>
 
 </div>
+
+<!-- INJECT DATA FOR APP.JS CHART INITIALIZER -->
+<script>
+window.dashboardChartData = {
+    activityTrends: <?php echo json_encode($activity_trends ?? array()); ?>,
+    categoryDistribution: <?php echo json_encode($category_distribution ?? array()); ?>
+};
+</script>
+

@@ -37,10 +37,13 @@ class Dashboard extends MY_Controller {
                 'low_stock_medicines'  => $summary['low_stock_medicines'],
                 'expired_medicines'    => $summary['expired_medicines'],
                 'expiring_soon'        => $summary['expiring_soon'],
+                'expiring_7_days'      => $summary['expiring_7_days'],
             ),
-            'recent_activities'   => $summary['recent_activities'],
-            'low_stock_items'     => $summary['low_stock_items'],
-            'expiring_soon_items' => $summary['expiring_soon_items'],
+            'recent_activities'     => $summary['recent_activities'],
+            'low_stock_items'       => $summary['low_stock_items'],
+            'expiring_soon_items'   => $summary['expiring_soon_items'],
+            'category_distribution' => $summary['category_distribution'] ?? array('labels' => array(), 'values' => array()),
+            'activity_trends'       => $summary['activity_trends'] ?? array('labels' => array(), 'stockIn' => array(), 'stockOut' => array()),
         );
 
         $this->render_view('dashboard/index', $data);

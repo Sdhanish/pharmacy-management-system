@@ -335,4 +335,83 @@ class Stock_model extends CI_Model {
             return 0;
         }
     }
+
+    /**
+     * Get ALL active medicines with current stock and latest purchase info.
+     * This ensures every medicine appears in Stock Management even without a purchase order.
+     *
+     * @param int $limit
+     * @param int $offset
+     * @param string|null $search
+     * @return array
+     */
+    public function get_medicine_inventory_overview($limit = 15, $offset = 0, $search = null) {
+        try {
+            $this->db->select('
+                m.id,
+                m.medicine_name,
+                m.stock_quantity as current_stock,
+                m.price as sell_price,
+                m.image_url,
+                m.status,
+                c.name as category_name,
+                MAX(sp.purchase_date) as last_purchase_date,
+                SUM(sp.quantity) as total_purchased,
+                s.name as last_supplier_name,
+                sp.purchase_price as last_unit_price
+            ');
+            $this->db->from('medicines m');
+            $this->db->join('categories c', 'c.id = m.category_id', 'left');
+            $this->db->join('stock_purchases sp', 'sp.medicine_id = m.id', 'left');
+            $this->db->join('suppliers s', 's.id = sp.supplier_id', 'left');
+            $this->db->where('m.status', 'active');
+
+            if (!empty($search)) {
+                $search = trim($search);
+                $this->db->group_start();
+                $this->db->like('m.medicine_name', $search);
+                $this->db->or_like('c.name', $search);
+                $this->db->or_like('s.name', $search);
+                $this->db->group_end();
+            }
+
+            $this->db->group_by('m.id, m.medicine_name, m.stock_quantity, m.price, m.image_url, m.status, c.name, sp.purchase_price');
+            $this->db->order_by('m.stock_quantity', 'ASC');
+            $this->db->limit((int) $limit, (int) $offset);
+
+            $query = $this->db->get();
+            return ($query && $query->num_rows() > 0) ? $query->result_array() : array();
+        } catch (Exception $e) {
+            log_message('error', 'Stock_model get_medicine_inventory_overview error: ' . $e->getMessage());
+            return array();
+        }
+    }
+
+    /**
+     * Count total active medicines for inventory overview pagination
+     *
+     * @param string|null $search
+     * @return int
+     */
+    public function count_medicine_inventory($search = null) {
+        try {
+            $this->db->from('medicines m');
+            $this->db->join('categories c', 'c.id = m.category_id', 'left');
+            $this->db->join('suppliers s', 's.id = (SELECT supplier_id FROM stock_purchases WHERE medicine_id = m.id ORDER BY id DESC LIMIT 1)', 'left');
+            $this->db->where('m.status', 'active');
+
+            if (!empty($search)) {
+                $search = trim($search);
+                $this->db->group_start();
+                $this->db->like('m.medicine_name', $search);
+                $this->db->or_like('c.name', $search);
+                $this->db->or_like('s.name', $search);
+                $this->db->group_end();
+            }
+
+            return (int) $this->db->count_all_results();
+        } catch (Exception $e) {
+            return 0;
+        }
+    }
 }

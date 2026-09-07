@@ -156,4 +156,29 @@ class Customer_model extends CI_Model {
             return TRUE;
         }
     }
+
+    /**
+     * Create / Register a new customer
+     *
+     * @param array $data
+     * @return int|bool Insert ID on success, FALSE on failure
+     */
+    public function create_customer($data) {
+        try {
+            $data['role'] = 'customer';
+            $data['created_at'] = date('Y-m-d H:i:s');
+            $data['updated_at'] = date('Y-m-d H:i:s');
+            if (empty($data['password'])) {
+                $data['password'] = password_hash('Customer@123', PASSWORD_BCRYPT);
+            }
+            if ($this->db->insert('users', $data)) {
+                return $this->db->insert_id();
+            }
+            return FALSE;
+        } catch (Exception $e) {
+            log_message('error', 'Customer_model create_customer error: ' . $e->getMessage());
+            return FALSE;
+        }
+    }
 }
+

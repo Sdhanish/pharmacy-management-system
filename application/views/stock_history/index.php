@@ -59,17 +59,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <!-- AUDIT LEDGER TABLE -->
 <div class="app-card p-0 overflow-hidden mb-6">
     <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0 text-xs sm:text-sm">
+        <table class="table table-hover align-middle mb-0 text-xs sm:text-sm" id="stockHistoryTable">
             <thead class="table-light text-[11px] text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200">
                 <tr>
-                    <th class="py-3.5 pl-4">Transaction Ref</th>
-                    <th class="py-3.5">Action Type</th>
-                    <th class="py-3.5">Medicine</th>
-                    <th class="py-3.5 text-center">Qty Change</th>
-                    <th class="py-3.5 text-center">Balance After</th>
-                    <th class="py-3.5">Recorded By</th>
+                    <th class="sortable py-3.5 pl-4" data-sort="text">Transaction Ref</th>
+                    <th class="sortable py-3.5" data-sort="text">Action Type</th>
+                    <th class="sortable py-3.5" data-sort="text">Medicine</th>
+                    <th class="sortable py-3.5 text-center" data-sort="number">Qty Change</th>
+                    <th class="sortable py-3.5 text-center" data-sort="number">Balance After</th>
+                    <th class="sortable py-3.5" data-sort="text">Recorded By</th>
                     <th class="py-3.5">Notes & Details</th>
-                    <th class="py-3.5 text-end pr-4">Timestamp</th>
+                    <th class="sortable py-3.5 text-end pr-4" data-sort="date">Timestamp</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">

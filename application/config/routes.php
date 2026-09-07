@@ -76,8 +76,27 @@ $route['stock_history/(:any)'] = 'stock_history/$1';
 $route['customers']            = 'customers/index';
 $route['customers/(:any)']     = 'customers/$1';
 
-$route['cart']                 = 'cart/index';
-$route['cart/(:any)']          = 'cart/$1';
+$route['sales']                 = 'sales/index';
+$route['sales/create']          = 'sales/create';
+$route['sales/store']           = 'sales/store';
+$route['sales/invoice/(:num)']  = 'sales/invoice/$1';
+$route['sales/delete/(:num)']   = 'sales/delete/$1';
+$route['sales/(:any)']          = 'sales/$1';
+$route['customer-purchases']    = 'sales/index';
 
-$route['reports']              = 'reports/index';
-$route['reports/(:any)']       = 'reports/$1';
+$route['expiry']                       = 'expiry/index';
+$route['expiry/expired']               = 'expiry/expired';
+$route['expiry/expiring-30-days']       = 'expiry/expiring_30_days';
+$route['expiry/expiring-7-days']        = 'expiry/expiring_7_days';
+$route['expiry/(:any)']                = 'expiry/$1';
+
+$route['reports']                  = 'reports/index';
+$route['reports/available']        = 'reports/available';
+$route['reports/low-stock']        = 'reports/low_stock';
+$route['reports/low_stock']        = 'reports/low_stock';
+$route['reports/expired']          = 'reports/expired';
+$route['reports/expiring-soon']    = 'reports/expiring_soon';
+$route['reports/expiring_soon']    = 'reports/expiring_soon';
+$route['reports/stock-activity']   = 'reports/stock_activity';
+$route['reports/stock_activity']   = 'reports/stock_activity';
+$route['reports/(:any)']           = 'reports/$1';

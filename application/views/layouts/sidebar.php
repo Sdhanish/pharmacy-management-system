@@ -46,7 +46,16 @@ $current_menu = isset($active_menu) ? $active_menu : $this->uri->segment(1, 'das
                 <span>Dashboard</span>
             </a>
 
-            <!-- 2. Medicines -->
+            <!-- 2. Customer Purchases & Sales -->
+            <a href="<?php echo base_url('sales'); ?>" 
+               class="nav-link-custom <?php echo ($current_menu === 'sales' || $current_menu === 'pos') ? 'active' : ''; ?>">
+                <span class="nav-icon w-5 text-center text-base">
+                    <i class="fa-solid fa-cart-flatbed"></i>
+                </span>
+                <span>Customer Purchases</span>
+            </a>
+
+            <!-- 3. Medicines -->
             <a href="<?php echo base_url('medicines'); ?>" 
                class="nav-link-custom <?php echo ($current_menu === 'medicines') ? 'active' : ''; ?>">
                 <span class="nav-icon w-5 text-center text-base">
@@ -55,7 +64,7 @@ $current_menu = isset($active_menu) ? $active_menu : $this->uri->segment(1, 'das
                 <span>Medicines</span>
             </a>
 
-            <!-- 3. Categories -->
+            <!-- 4. Categories -->
             <a href="<?php echo base_url('categories'); ?>" 
                class="nav-link-custom <?php echo ($current_menu === 'categories') ? 'active' : ''; ?>">
                 <span class="nav-icon w-5 text-center text-base">
@@ -86,7 +95,19 @@ $current_menu = isset($active_menu) ? $active_menu : $this->uri->segment(1, 'das
                 <span>Stock History</span>
             </a>
 
-            <!-- 6. Customers -->
+            <!-- 6. Expiry Alerts -->
+            <a href="<?php echo base_url('expiry'); ?>" 
+               class="nav-link-custom <?php echo ($current_menu === 'expiry') ? 'active' : ''; ?>">
+                <span class="nav-icon w-5 text-center text-base">
+                    <i class="fa-solid fa-calendar-xmark text-rose-500"></i>
+                </span>
+                <span class="flex-1 flex items-center justify-between">
+                    <span>Expiry Alerts</span>
+                    <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+                </span>
+            </a>
+
+            <!-- 7. Customers -->
             <a href="<?php echo base_url('customers'); ?>" 
                class="nav-link-custom <?php echo ($current_menu === 'customers') ? 'active' : ''; ?>">
                 <span class="nav-icon w-5 text-center text-base">

@@ -87,6 +87,54 @@ class Customers extends MY_Controller {
     }
 
     /**
+     * Create New Customer Page
+     */
+    public function create() {
+        $data = array(
+            'page_title'  => 'Add New Customer',
+            'active_menu' => 'customers',
+            'breadcrumbs' => array(
+                'Customers' => 'customers',
+                'Add Customer' => ''
+            )
+        );
+
+        $this->render_view('customers/create', $data);
+    }
+
+    /**
+     * Store New Customer in Database
+     */
+    public function store() {
+        $this->_set_validation_rules(null);
+
+        if ($this->form_validation->run() === FALSE) {
+            $this->create();
+            return;
+        }
+
+        $customer_data = array(
+            'name'       => trim($this->input->post('name', TRUE)),
+            'email'      => trim($this->input->post('email', TRUE)),
+            'phone'      => trim($this->input->post('phone', TRUE)),
+            'address'    => trim($this->input->post('address', TRUE)),
+            'status'     => $this->input->post('status') ? $this->input->post('status') : 'active',
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s')
+        );
+
+        $insert_id = $this->Customer_model->create_customer($customer_data);
+
+        if ($insert_id) {
+            $this->session->set_flashdata('success', 'Customer account "' . html_escape($customer_data['name']) . '" registered successfully!');
+            redirect('customers');
+        } else {
+            $this->session->set_flashdata('error', 'Failed to register new customer. Please try again.');
+            $this->create();
+        }
+    }
+
+    /**
      * Customer Edit Page
      *
      * @param int $id

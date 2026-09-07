@@ -31,14 +31,10 @@ $image_src = !empty($medicine->image_url) ? $medicine->image_url : 'https://imag
         </p>
     </div>
     <div class="flex items-center gap-2.5">
-        <form action="<?php echo base_url('cart/add'); ?>" method="POST" class="inline m-0">
-            <input type="hidden" name="medicine_id" value="<?php echo $medicine->id; ?>">
-            <input type="hidden" name="quantity" value="1">
-            <button type="submit" class="btn btn-emerald text-xs sm:text-sm font-semibold rounded-xl px-4 py-2.5 shadow-md shadow-emerald-600/20 hover:shadow-lg transition flex items-center gap-2" <?php echo ($stock <= 0) ? 'disabled' : ''; ?>>
-                <i class="fa-solid fa-cart-plus"></i>
-                <span>Add to Cart</span>
-            </button>
-        </form>
+        <a href="<?php echo base_url('sales/create'); ?>" class="btn btn-emerald text-xs sm:text-sm font-semibold rounded-xl px-4 py-2.5 shadow-md shadow-emerald-600/20 hover:shadow-lg transition flex items-center gap-2 text-decoration-none">
+            <i class="fa-solid fa-cart-flatbed"></i>
+            <span>Record Sale</span>
+        </a>
         <a href="<?php echo base_url('medicines/edit/' . $medicine->id); ?>" class="btn btn-light text-xs sm:text-sm font-semibold rounded-xl px-4 py-2.5 border border-slate-200 text-slate-700 hover:bg-slate-100 flex items-center gap-2 text-decoration-none">
             <i class="fa-solid fa-pen-to-square"></i>
             <span>Edit</span>
