@@ -466,13 +466,9 @@ th.sortable.sorted-desc .sort-icon {
     padding: 0 !important;
   }
 
-  .print-header {
-    display: block !important;
-  }
-
+  .print-header,
   .print-footer {
-    display: block !important;
-    page-break-inside: avoid;
+    display: none !important;
   }
 
   .print-card {

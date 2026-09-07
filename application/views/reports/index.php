@@ -267,7 +267,7 @@ document.getElementById('toggleFilterBtn').addEventListener('click', function() 
 <div class="app-card p-0 overflow-hidden mb-6 shadow-sm border border-slate-200 print-card">
     
     <!-- Table Header Metadata -->
-    <div class="px-5 py-4 bg-slate-50/80 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div class="no-print px-5 py-4 bg-slate-50/80 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
             <h3 class="text-sm font-bold text-slate-900 mb-0.5 flex items-center gap-2">
                 <i class="fa-solid fa-table-list text-emerald-600"></i>
