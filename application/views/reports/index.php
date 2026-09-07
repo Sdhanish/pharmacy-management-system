@@ -106,163 +106,160 @@ $count_records = is_array($report_data) ? count($report_data) : 0;
 <!-- ==========================================
      REPORT SELECTOR TABS & FILTER FORM
      ========================================== -->
-<div class="no-print app-card p-5 mb-6">
-    
-    <!-- 1. Report Mode Tabs -->
-    <div class="flex flex-wrap items-center gap-2 pb-4 mb-4 border-b border-slate-100">
-        <a href="<?php echo base_url('reports?type=available'); ?>" 
+<div class="no-print app-card p-0 mb-6 overflow-hidden">
+
+    <!-- Report Type Tabs -->
+    <div class="flex flex-wrap items-center gap-2 p-4 border-b border-slate-100">
+        <a href="<?php echo base_url('reports?type=available'); ?>"
            class="px-3.5 py-2 rounded-xl text-xs font-bold text-decoration-none transition flex items-center gap-1.5 <?php echo ($type === 'available') ? 'bg-emerald-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'; ?>">
             <i class="fa-solid fa-boxes-stacked text-[11px]"></i>
             <span>Available Medicines</span>
         </a>
-
-        <a href="<?php echo base_url('reports?type=low_stock'); ?>" 
+        <a href="<?php echo base_url('reports?type=low_stock'); ?>"
            class="px-3.5 py-2 rounded-xl text-xs font-bold text-decoration-none transition flex items-center gap-1.5 <?php echo ($type === 'low_stock') ? 'bg-amber-600 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'; ?>">
             <i class="fa-solid fa-triangle-exclamation text-[11px]"></i>
-            <span>Low Stock Report</span>
+            <span>Low Stock</span>
         </a>
-
-        <a href="<?php echo base_url('reports?type=expired'); ?>" 
+        <a href="<?php echo base_url('reports?type=expired'); ?>"
            class="px-3.5 py-2 rounded-xl text-xs font-bold text-decoration-none transition flex items-center gap-1.5 <?php echo ($type === 'expired') ? 'bg-rose-600 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'; ?>">
             <i class="fa-solid fa-ban text-[11px]"></i>
-            <span>Expired Medicines</span>
+            <span>Expired</span>
         </a>
-
-        <a href="<?php echo base_url('reports?type=expiring_soon'); ?>" 
+        <a href="<?php echo base_url('reports?type=expiring_soon'); ?>"
            class="px-3.5 py-2 rounded-xl text-xs font-bold text-decoration-none transition flex items-center gap-1.5 <?php echo ($type === 'expiring_soon') ? 'bg-orange-600 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'; ?>">
             <i class="fa-solid fa-clock-rotate-left text-[11px]"></i>
             <span>Expiring Soon</span>
         </a>
-
-        <a href="<?php echo base_url('reports?type=stock_activity'); ?>" 
+        <a href="<?php echo base_url('reports?type=stock_activity'); ?>"
            class="px-3.5 py-2 rounded-xl text-xs font-bold text-decoration-none transition flex items-center gap-1.5 <?php echo ($type === 'stock_activity') ? 'bg-purple-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'; ?>">
             <i class="fa-solid fa-clock text-[11px]"></i>
-            <span>Stock Activity Report</span>
+            <span>Stock Activity</span>
         </a>
+
+        <!-- Filter Toggle Button (right side) -->
+        <button type="button" id="toggleFilterBtn"
+                class="ml-auto px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center gap-1.5 transition border border-slate-200">
+            <i class="fa-solid fa-sliders text-[11px]"></i>
+            <span>Filters</span>
+            <i class="fa-solid fa-chevron-down text-[9px] transition-transform" id="filterChevron"></i>
+        </button>
     </div>
 
-    <!-- 2. Dynamic Filter Form -->
-    <form action="<?php echo base_url('reports'); ?>" method="GET" class="grid grid-cols-1 sm:grid-cols-12 gap-3.5 items-end">
-        <input type="hidden" name="type" value="<?php echo html_escape($type); ?>">
+    <!-- Collapsible Filter Form (hidden by default when results exist) -->
+    <div id="filterPanel" class="<?php echo ($count_records > 0) ? 'hidden' : ''; ?> p-5 border-t border-slate-100">
+        <form action="<?php echo base_url('reports'); ?>" method="GET" class="grid grid-cols-1 sm:grid-cols-12 gap-3.5 items-end">
+            <input type="hidden" name="type" value="<?php echo html_escape($type); ?>">
 
-        <!-- Search Input -->
-        <div class="sm:col-span-4">
-            <label for="search" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                Search Medicine / Reference
-            </label>
-            <div class="relative">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
-                    <i class="fa-solid fa-magnifying-glass text-xs"></i>
-                </span>
-                <input type="text" 
-                       name="search" 
-                       id="search" 
-                       value="<?php echo html_escape($search ?? ''); ?>" 
-                       class="form-control form-control-sm pl-9 text-xs rounded-xl border-slate-200 focus:border-emerald-500 focus:ring-emerald-500" 
-                       placeholder="Search keyword...">
-            </div>
-        </div>
-
-        <!-- Category Dropdown Filter -->
-        <div class="sm:col-span-3">
-            <label for="category_id" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                Category
-            </label>
-            <select name="category_id" id="category_id" class="form-select form-select-sm text-xs rounded-xl border-slate-200 focus:border-emerald-500">
-                <option value="">All Categories</option>
-                <?php if (isset($categories) && !empty($categories)): ?>
-                    <?php foreach ($categories as $cat): ?>
-                        <option value="<?php echo $cat['id']; ?>" <?php echo ((string)($category_id ?? '') === (string)$cat['id']) ? 'selected' : ''; ?>>
-                            <?php echo html_escape($cat['name']); ?>
-                        </option>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </select>
-        </div>
-
-        <!-- Conditional Filters based on Report Type -->
-        <?php if ($type === 'stock_activity'): ?>
-            <!-- Transaction Type Filter -->
-            <div class="sm:col-span-2">
-                <label for="transaction_type" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                    Action Type
+            <!-- Search Input -->
+            <div class="sm:col-span-4">
+                <label for="search" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                    Search Medicine / Reference
                 </label>
-                <select name="transaction_type" id="transaction_type" class="form-select form-select-sm text-xs rounded-xl border-slate-200 focus:border-emerald-500">
-                    <option value="ALL" <?php echo ($transaction_type === 'ALL') ? 'selected' : ''; ?>>All Actions</option>
-                    <option value="PURCHASE" <?php echo ($transaction_type === 'PURCHASE') ? 'selected' : ''; ?>>Purchase</option>
-                    <option value="SALE" <?php echo ($transaction_type === 'SALE') ? 'selected' : ''; ?>>Sale / Dispensary</option>
-                    <option value="ADJUSTMENT" <?php echo ($transaction_type === 'ADJUSTMENT') ? 'selected' : ''; ?>>Adjustment</option>
-                    <option value="EXPIRED" <?php echo ($transaction_type === 'EXPIRED') ? 'selected' : ''; ?>>Expired Out</option>
-                    <option value="RETURN" <?php echo ($transaction_type === 'RETURN') ? 'selected' : ''; ?>>Return</option>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                    </span>
+                    <input type="text" name="search" id="search"
+                           value="<?php echo html_escape($search ?? ''); ?>"
+                           class="form-control form-control-sm pl-9 text-xs rounded-xl border-slate-200 focus:border-emerald-500 focus:ring-emerald-500"
+                           placeholder="Search keyword...">
+                </div>
+            </div>
+
+            <!-- Category -->
+            <div class="sm:col-span-3">
+                <label for="category_id" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Category</label>
+                <select name="category_id" id="category_id" class="form-select form-select-sm text-xs rounded-xl border-slate-200 focus:border-emerald-500">
+                    <option value="">All Categories</option>
+                    <?php if (isset($categories) && !empty($categories)): ?>
+                        <?php foreach ($categories as $cat): ?>
+                            <option value="<?php echo $cat['id']; ?>" <?php echo ((string)($category_id ?? '') === (string)$cat['id']) ? 'selected' : ''; ?>>
+                                <?php echo html_escape($cat['name']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </select>
             </div>
-        <?php elseif ($type === 'expiring_soon'): ?>
-            <!-- Horizon Days Filter -->
-            <div class="sm:col-span-2">
-                <label for="days" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                    Horizon
-                </label>
-                <select name="days" id="days" class="form-select form-select-sm text-xs rounded-xl border-slate-200 focus:border-emerald-500">
-                    <option value="7" <?php echo ($days === 7) ? 'selected' : ''; ?>>Within 7 Days (Critical)</option>
-                    <option value="15" <?php echo ($days === 15) ? 'selected' : ''; ?>>Within 15 Days</option>
-                    <option value="30" <?php echo ($days === 30) ? 'selected' : ''; ?>>Within 30 Days (Standard)</option>
-                    <option value="60" <?php echo ($days === 60) ? 'selected' : ''; ?>>Within 60 Days</option>
-                    <option value="90" <?php echo ($days === 90) ? 'selected' : ''; ?>>Within 90 Days</option>
-                </select>
-            </div>
-        <?php elseif ($type === 'low_stock'): ?>
-            <!-- Threshold Filter -->
-            <div class="sm:col-span-2">
-                <label for="threshold" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                    Threshold (&le;)
-                </label>
-                <input type="number" 
-                       name="threshold" 
-                       id="threshold" 
-                       min="1" 
-                       max="100" 
-                       value="<?php echo html_escape($threshold); ?>" 
-                       class="form-control form-control-sm text-xs rounded-xl border-slate-200 focus:border-emerald-500">
-            </div>
-        <?php endif; ?>
 
-        <!-- Date Range Filters -->
-        <div class="<?php echo in_array($type, ['stock_activity', 'expiring_soon', 'low_stock']) ? 'sm:col-span-3' : 'sm:col-span-5'; ?> grid grid-cols-2 gap-2">
-            <div>
-                <label for="start_date" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                    From
-                </label>
-                <input type="date" 
-                       name="start_date" 
-                       id="start_date" 
-                       value="<?php echo html_escape($start_date ?? ''); ?>" 
-                       class="form-control form-control-sm text-xs rounded-xl border-slate-200 focus:border-emerald-500">
-            </div>
-            <div>
-                <label for="end_date" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                    To
-                </label>
-                <input type="date" 
-                       name="end_date" 
-                       id="end_date" 
-                       value="<?php echo html_escape($end_date ?? ''); ?>" 
-                       class="form-control form-control-sm text-xs rounded-xl border-slate-200 focus:border-emerald-500">
-            </div>
-        </div>
+            <!-- Conditional Filters -->
+            <?php if ($type === 'stock_activity'): ?>
+                <div class="sm:col-span-2">
+                    <label for="transaction_type" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Action Type</label>
+                    <select name="transaction_type" id="transaction_type" class="form-select form-select-sm text-xs rounded-xl border-slate-200 focus:border-emerald-500">
+                        <option value="ALL" <?php echo ($transaction_type === 'ALL') ? 'selected' : ''; ?>>All Actions</option>
+                        <option value="PURCHASE" <?php echo ($transaction_type === 'PURCHASE') ? 'selected' : ''; ?>>Purchase</option>
+                        <option value="SALE" <?php echo ($transaction_type === 'SALE') ? 'selected' : ''; ?>>Sale</option>
+                        <option value="ADJUSTMENT" <?php echo ($transaction_type === 'ADJUSTMENT') ? 'selected' : ''; ?>>Adjustment</option>
+                        <option value="EXPIRED" <?php echo ($transaction_type === 'EXPIRED') ? 'selected' : ''; ?>>Expired Out</option>
+                        <option value="RETURN" <?php echo ($transaction_type === 'RETURN') ? 'selected' : ''; ?>>Return</option>
+                    </select>
+                </div>
+            <?php elseif ($type === 'expiring_soon'): ?>
+                <div class="sm:col-span-2">
+                    <label for="days" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Horizon</label>
+                    <select name="days" id="days" class="form-select form-select-sm text-xs rounded-xl border-slate-200 focus:border-emerald-500">
+                        <option value="7" <?php echo ($days === 7) ? 'selected' : ''; ?>>Within 7 Days</option>
+                        <option value="15" <?php echo ($days === 15) ? 'selected' : ''; ?>>Within 15 Days</option>
+                        <option value="30" <?php echo ($days === 30) ? 'selected' : ''; ?>>Within 30 Days</option>
+                        <option value="60" <?php echo ($days === 60) ? 'selected' : ''; ?>>Within 60 Days</option>
+                        <option value="90" <?php echo ($days === 90) ? 'selected' : ''; ?>>Within 90 Days</option>
+                    </select>
+                </div>
+            <?php elseif ($type === 'low_stock'): ?>
+                <div class="sm:col-span-2">
+                    <label for="threshold" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Threshold (&le;)</label>
+                    <input type="number" name="threshold" id="threshold" min="1" max="100"
+                           value="<?php echo html_escape($threshold); ?>"
+                           class="form-control form-control-sm text-xs rounded-xl border-slate-200 focus:border-emerald-500">
+                </div>
+            <?php endif; ?>
 
-        <!-- Submit & Reset Buttons -->
-        <div class="sm:col-span-12 flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
-            <a href="<?php echo base_url('reports?type=' . urlencode($type)); ?>" class="btn btn-light btn-sm rounded-xl px-3.5 py-2 text-xs font-semibold border border-slate-200 text-slate-600 hover:bg-slate-100 flex items-center gap-1 text-decoration-none">
-                <i class="fa-solid fa-rotate-left text-[10px]"></i>
-                <span>Reset Filters</span>
-            </a>
-            <button type="submit" class="btn btn-emerald btn-sm rounded-xl px-4 py-2 text-xs font-semibold flex items-center gap-1.5 shadow-xs">
-                <i class="fa-solid fa-filter text-[10px]"></i>
-                <span>Generate Filtered Report</span>
-            </button>
-        </div>
-    </form>
+            <!-- Date Range -->
+            <div class="<?php echo in_array($type, ['stock_activity', 'expiring_soon', 'low_stock']) ? 'sm:col-span-3' : 'sm:col-span-5'; ?> grid grid-cols-2 gap-2">
+                <div>
+                    <label for="start_date" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">From</label>
+                    <input type="date" name="start_date" id="start_date"
+                           value="<?php echo html_escape($start_date ?? ''); ?>"
+                           class="form-control form-control-sm text-xs rounded-xl border-slate-200 focus:border-emerald-500">
+                </div>
+                <div>
+                    <label for="end_date" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">To</label>
+                    <input type="date" name="end_date" id="end_date"
+                           value="<?php echo html_escape($end_date ?? ''); ?>"
+                           class="form-control form-control-sm text-xs rounded-xl border-slate-200 focus:border-emerald-500">
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="sm:col-span-12 flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                <a href="<?php echo base_url('reports?type=' . urlencode($type)); ?>" class="btn btn-light btn-sm rounded-xl px-3.5 py-2 text-xs font-semibold border border-slate-200 text-slate-600 hover:bg-slate-100 flex items-center gap-1 text-decoration-none">
+                    <i class="fa-solid fa-rotate-left text-[10px]"></i>
+                    <span>Reset Filters</span>
+                </a>
+                <button type="submit" class="btn btn-emerald btn-sm rounded-xl px-4 py-2 text-xs font-semibold flex items-center gap-1.5">
+                    <i class="fa-solid fa-filter text-[10px]"></i>
+                    <span>Generate Filtered Report</span>
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
+
+<script>
+// Toggle filter panel
+document.getElementById('toggleFilterBtn').addEventListener('click', function() {
+    var panel   = document.getElementById('filterPanel');
+    var chevron = document.getElementById('filterChevron');
+    if (panel.classList.contains('hidden')) {
+        panel.classList.remove('hidden');
+        chevron.style.transform = 'rotate(180deg)';
+    } else {
+        panel.classList.add('hidden');
+        chevron.style.transform = 'rotate(0deg)';
+    }
+});
+</script>
+
 
 <!-- ==========================================
      REPORT RESULTS TABLE
