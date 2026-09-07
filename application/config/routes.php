@@ -54,6 +54,8 @@ $route['default_controller'] = 'welcome';
 $route['login']     = 'auth/login';
 $route['dashboard'] = 'dashboard/index';
 $route['logout']    = 'auth/logout';
+$route['profile']   = 'profile/index';
+$route['profile/update'] = 'profile/update';
 
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = TRUE;

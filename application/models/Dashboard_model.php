@@ -238,8 +238,10 @@ class Dashboard_model extends CI_Model {
             }
 
             if (empty($labels)) {
-                $labels = array('General');
-                $values = array(100);
+                return array(
+                    'labels' => array(),
+                    'values' => array()
+                );
             }
 
             return array(
@@ -249,8 +251,8 @@ class Dashboard_model extends CI_Model {
         } catch (Exception $e) {
             log_message('error', 'Dashboard get_category_stock_distribution error: ' . $e->getMessage());
             return array(
-                'labels' => array('General', 'Antibiotics', 'Pain Relief'),
-                'values' => array(120, 80, 50)
+                'labels' => array(),
+                'values' => array()
             );
         }
     }
@@ -306,10 +308,38 @@ class Dashboard_model extends CI_Model {
         } catch (Exception $e) {
             log_message('error', 'Dashboard get_stock_activity_trends error: ' . $e->getMessage());
             return array(
-                'labels'   => array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'),
-                'stockIn'  => array(20, 45, 10, 80, 25, 60, 30),
-                'stockOut' => array(15, 30, 20, 45, 40, 50, 25)
+                'labels'   => array(),
+                'stockIn'  => array(),
+                'stockOut' => array()
             );
+        }
+    }
+
+    /**
+     * Get current inventory notifications for the global header.
+     *
+     * @param int $limit
+     * @return array
+     */
+    public function get_inventory_notifications($limit = 5) {
+        try {
+            $this->db->select("m.id, m.medicine_name, m.stock_quantity, m.expiry_date,
+                CASE WHEN m.stock_quantity <= 0 THEN 'out_of_stock' ELSE 'expired' END as alert_type", FALSE);
+            $this->db->from('medicines m');
+            $this->db->where('m.status', 'active');
+            $this->db->group_start();
+            $this->db->where('m.stock_quantity <=', 0);
+            $this->db->or_where('m.expiry_date <', 'CURRENT_DATE()', FALSE);
+            $this->db->group_end();
+            $this->db->order_by('m.stock_quantity', 'ASC');
+            $this->db->order_by('m.expiry_date', 'ASC');
+            $this->db->limit((int) $limit);
+
+            $query = $this->db->get();
+            return ($query && $query->num_rows() > 0) ? $query->result_array() : array();
+        } catch (Exception $e) {
+            log_message('error', 'Dashboard get_inventory_notifications error: ' . $e->getMessage());
+            return array();
         }
     }
 
@@ -329,8 +359,6 @@ class Dashboard_model extends CI_Model {
             'recent_activities'     => $this->get_recent_activities(10),
             'low_stock_items'       => $this->get_low_stock_medicines(5),
             'expiring_soon_items'   => $this->get_expiring_soon_medicines(30, 5),
-            'category_distribution' => $this->get_category_stock_distribution(6),
-            'activity_trends'       => $this->get_stock_activity_trends(7),
         );
     }
 }

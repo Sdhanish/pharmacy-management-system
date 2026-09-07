@@ -148,69 +148,6 @@ $user_display_name = isset($current_user['name']) ? $current_user['name'] : 'Doc
 
 </div>
 
-<!-- CHART.JS ANALYTICS VISUALIZATION SECTION -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-    
-    <!-- LEFT 2 COLS: 7-DAY STOCK VELOCITY AREA CHART -->
-    <div class="lg:col-span-2 app-card p-5 sm:p-6 flex flex-col justify-between">
-        <div>
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-100">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-chart-line text-base"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-base font-bold text-slate-900 mb-0.5">Stock Movement & Sales Velocity</h4>
-                        <p class="text-xs text-slate-400 mb-0">7-Day comparison of stock receipts (inflow) vs dispensations (sales)</p>
-                    </div>
-                </div>
-                <span class="badge bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs px-2.5 py-1 rounded-full font-semibold self-start sm:self-auto">
-                    Live Velocity
-                </span>
-            </div>
-            
-            <div class="relative h-64 sm:h-72 w-full">
-                <canvas id="stockTrendsChart"></canvas>
-            </div>
-        </div>
-
-        <div class="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
-            <span class="flex items-center gap-2">
-                <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Stock Received
-                <span class="inline-block w-2.5 h-2.5 rounded-full bg-blue-500 ml-2"></span> Stock Dispensed
-            </span>
-            <a href="<?php echo base_url('reports?type=stock_activity'); ?>" class="text-emerald-600 font-semibold hover:underline text-decoration-none">View full audit ledger &rarr;</a>
-        </div>
-    </div>
-
-    <!-- RIGHT 1 COL: INVENTORY CATEGORY ALLOCATION DOUGHNUT CHART -->
-    <div class="app-card p-5 sm:p-6 flex flex-col justify-between">
-        <div>
-            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-chart-pie text-base"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-base font-bold text-slate-900 mb-0.5">Category Allocation</h4>
-                        <p class="text-xs text-slate-400 mb-0">Stock share per therapeutic class</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="relative h-64 sm:h-72 w-full flex items-center justify-center">
-                <canvas id="categoryDistributionChart"></canvas>
-            </div>
-        </div>
-
-        <div class="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
-            <span>Aggregated by active categories</span>
-            <a href="<?php echo base_url('categories'); ?>" class="text-teal-600 font-semibold hover:underline text-decoration-none">Manage &rarr;</a>
-        </div>
-    </div>
-
-</div>
-
 <!-- MAIN SECTION: RECENT ACTIVITY TABLE & QUICK ATTENTION WIDGETS -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
     
@@ -487,12 +424,4 @@ $user_display_name = isset($current_user['name']) ? $current_user['name'] : 'Doc
     </div>
 
 </div>
-
-<!-- INJECT DATA FOR APP.JS CHART INITIALIZER -->
-<script>
-window.dashboardChartData = {
-    activityTrends: <?php echo json_encode($activity_trends ?? array()); ?>,
-    categoryDistribution: <?php echo json_encode($category_distribution ?? array()); ?>
-};
-</script>
 

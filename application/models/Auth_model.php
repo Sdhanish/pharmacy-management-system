@@ -53,10 +53,10 @@ class Auth_model extends CI_Model {
         ) {
             return (object) array(
                 'id' => 1,
-                'name' => 'Dr. Dhanish S',
+                'name' => 'Admin',
                 'email' => 'admin@pharmacare.com',
-                'role' => 'Administrator',
-                'avatar' => 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&auto=format&fit=crop&q=80',
+                'role' => 'admin',
+                'avatar' => '',
                 'status' => 'active'
             );
         }
@@ -100,5 +100,23 @@ class Auth_model extends CI_Model {
             log_message('error', 'Get user error: ' . $e->getMessage());
         }
         return NULL;
+    }
+
+    /**
+     * Update editable profile fields for an active user.
+     *
+     * @param int $user_id
+     * @param array $data
+     * @return bool
+     */
+    public function update_profile($user_id, $data) {
+        try {
+            $this->db->where('id', (int) $user_id);
+            $this->db->where('status', 'active');
+            return $this->db->update('users', $data);
+        } catch (Exception $e) {
+            log_message('error', 'Update profile error: ' . $e->getMessage());
+        }
+        return FALSE;
     }
 }

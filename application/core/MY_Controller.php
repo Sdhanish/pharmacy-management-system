@@ -17,6 +17,7 @@ class MY_Controller extends CI_Controller {
     public $active_menu = 'dashboard';
     public $breadcrumbs = array();
     public $current_user = array();
+    public $inventory_notifications = array();
 
     public function __construct() {
         parent::__construct();
@@ -39,8 +40,11 @@ class MY_Controller extends CI_Controller {
                 'name'   => $this->session->userdata('user_name'),
                 'email'  => $this->session->userdata('user_email'),
                 'role'   => $this->session->userdata('user_role'),
-                'avatar' => $this->session->userdata('user_avatar') ?: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&auto=format&fit=crop&q=80'
+                'avatar' => ''
             );
+
+            $this->load->model('Dashboard_model');
+            $this->inventory_notifications = $this->Dashboard_model->get_inventory_notifications(5);
         }
     }
 
@@ -59,6 +63,7 @@ class MY_Controller extends CI_Controller {
             'active_menu'   => isset($data['active_menu']) ? $data['active_menu'] : $this->active_menu,
             'breadcrumbs'   => isset($data['breadcrumbs']) ? $data['breadcrumbs'] : $this->breadcrumbs,
             'current_user'  => isset($data['current_user']) ? $data['current_user'] : $this->current_user,
+            'inventory_notifications' => isset($data['inventory_notifications']) ? $data['inventory_notifications'] : $this->inventory_notifications,
         ));
 
         return $this->load->view('layouts/master', $view_data, $return);

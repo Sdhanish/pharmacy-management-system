@@ -2,10 +2,11 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 $user = isset($current_user) ? $current_user : array(
-    'name' => 'Dr. Dhanish S',
-    'role' => 'Administrator',
+    'name' => 'Administrator',
+    'role' => 'Admin',
     'avatar' => ''
 );
+$inventory_notifications = isset($inventory_notifications) && is_array($inventory_notifications) ? $inventory_notifications : array();
 ?>
 
 <!-- Top Navigation Bar -->
@@ -40,21 +41,6 @@ $user = isset($current_user) ? $current_user : array(
         </div>
     </div>
 
-    <!-- Center Section: Search Bar -->
-    <div class="hidden md:flex items-center flex-1 max-w-md mx-4">
-        <div class="relative w-full">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
-                <i class="fa-solid fa-magnifying-glass text-sm"></i>
-            </span>
-            <input type="text" id="global-search-input" 
-                   class="w-full pl-9 pr-14 py-2 bg-slate-100/80 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all" 
-                   placeholder="Quick search medicines, batches, SKU...">
-            <div class="absolute inset-y-0 right-0 flex items-center pr-2.5">
-                <kbd class="px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 bg-white border border-slate-200 rounded shadow-xs">Ctrl+K</kbd>
-            </div>
-        </div>
-    </div>
-
     <!-- Right Section: Status, Notifications & User Dropdown -->
     <div class="flex items-center gap-2 sm:gap-3">
         <!-- Live System Status Badge -->
@@ -84,32 +70,28 @@ $user = isset($current_user) ? $current_user : array(
             <ul class="dropdown-menu dropdown-menu-end shadow-lg border border-slate-100 rounded-2xl p-2 w-80 mt-2" aria-labelledby="notificationDropdown">
                 <li class="px-3 py-2 border-b border-slate-100 flex items-center justify-between">
                     <span class="font-bold text-xs text-slate-800 uppercase tracking-wider">Notifications</span>
-                    <span class="badge bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.5 rounded-full">2 New</span>
+                    <span class="badge bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.5 rounded-full"><?php echo count($inventory_notifications); ?> New</span>
                 </li>
-                <li>
-                    <a class="dropdown-item py-2.5 px-3 rounded-xl flex items-start gap-3 hover:bg-slate-50" href="<?php echo base_url('stock'); ?>">
-                        <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 mt-0.5">
-                            <i class="fa-solid fa-triangle-exclamation text-xs"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs font-semibold text-slate-800 mb-0.5">Low Stock Alert</p>
-                            <p class="text-[11px] text-slate-500 mb-0">Paracetamol 500mg has 8 strips remaining.</p>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item py-2.5 px-3 rounded-xl flex items-start gap-3 hover:bg-slate-50" href="<?php echo base_url('stock-history'); ?>">
-                        <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                            <i class="fa-solid fa-box text-xs"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs font-semibold text-slate-800 mb-0.5">New Stock Received</p>
-                            <p class="text-[11px] text-slate-500 mb-0">Batch #AMX-2026 received from MedSupply.</p>
-                        </div>
-                    </a>
-                </li>
+                <?php if (empty($inventory_notifications)): ?>
+                    <li class="px-3 py-4 text-center text-[11px] text-slate-500">No inventory alerts</li>
+                <?php else: ?>
+                    <?php foreach ($inventory_notifications as $notification): ?>
+                        <?php $is_out_of_stock = $notification['alert_type'] === 'out_of_stock'; ?>
+                        <li>
+                            <a class="dropdown-item py-2.5 px-3 rounded-xl flex items-start gap-3 hover:bg-slate-50" href="<?php echo base_url($is_out_of_stock ? 'stock' : 'expiry/expired'); ?>">
+                                <div class="w-8 h-8 rounded-lg <?php echo $is_out_of_stock ? 'bg-amber-100 text-amber-600' : 'bg-rose-100 text-rose-600'; ?> flex items-center justify-center shrink-0 mt-0.5">
+                                    <i class="fa-solid <?php echo $is_out_of_stock ? 'fa-triangle-exclamation' : 'fa-calendar-xmark'; ?> text-xs"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-xs font-semibold text-slate-800 mb-0.5"><?php echo $is_out_of_stock ? 'Out of Stock' : 'Expired Medicine'; ?></p>
+                                    <p class="text-[11px] text-slate-500 mb-0 truncate"><?php echo html_escape($notification['medicine_name']); ?><?php echo $is_out_of_stock ? ' has no units remaining.' : ' expired on ' . date('M d, Y', strtotime($notification['expiry_date'])) . '.'; ?></p>
+                                </div>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                <?php endif; ?>
                 <li class="pt-2 border-t border-slate-100 text-center">
-                    <a href="<?php echo base_url('reports'); ?>" class="text-[11px] text-emerald-600 font-semibold hover:underline">View All Alerts</a>
+                    <a href="<?php echo base_url('expiry'); ?>" class="text-[11px] text-emerald-600 font-semibold hover:underline">View All Alerts</a>
                 </li>
             </ul>
         </div>
@@ -118,10 +100,8 @@ $user = isset($current_user) ? $current_user : array(
         <div class="dropdown">
             <button class="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-slate-100 transition-colors focus:outline-none" 
                     type="button" id="userProfileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-emerald-400 p-0.5 shadow-sm">
-                    <img class="w-full h-full object-cover rounded-[10px]" 
-                         src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=120&auto=format&fit=crop&q=80" 
-                         alt="<?php echo html_escape($user['name']); ?>">
+                <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-sm text-sm font-bold" aria-hidden="true">
+                    A
                 </div>
                 <div class="hidden md:block text-left">
                     <div class="text-xs font-bold text-slate-800 leading-tight"><?php echo html_escape($user['name']); ?></div>
@@ -135,7 +115,7 @@ $user = isset($current_user) ? $current_user : array(
                     <p class="text-[11px] text-slate-400 mb-0 truncate"><?php echo isset($user['email']) ? html_escape($user['email']) : 'admin@pharmacare.com'; ?></p>
                 </li>
                 <li>
-                    <a class="dropdown-item py-2 px-3 rounded-lg text-xs flex items-center gap-2.5 text-slate-700 hover:bg-slate-50 mt-1" href="<?php echo base_url('dashboard'); ?>">
+                    <a class="dropdown-item py-2 px-3 rounded-lg text-xs flex items-center gap-2.5 text-slate-700 hover:bg-slate-50 mt-1" href="<?php echo base_url('profile'); ?>">
                         <i class="fa-regular fa-user text-slate-400 w-4"></i> Profile Settings
                     </a>
                 </li>

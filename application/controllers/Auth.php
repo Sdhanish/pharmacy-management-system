@@ -48,7 +48,9 @@ public function login()
                 $this->session->set_userdata([
                     'user_id'   => $user->id,
                     'user_name' => $user->name,
+                    'user_email' => $user->email,
                     'user_role' => $user->role,
+                    'user_avatar' => '',
                     'logged_in' => TRUE
                 ]);
 
@@ -69,6 +71,6 @@ public function login()
     public function logout() {
         $this->session->unset_userdata(array('user_id', 'user_name', 'user_email', 'user_role', 'user_avatar', 'logged_in', 'login_time'));
         $this->session->sess_destroy();
-        redirect('login');
+        redirect('welcome');
     }
 }
