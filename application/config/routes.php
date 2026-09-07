@@ -102,3 +102,13 @@ $route['reports/expiring_soon']    = 'reports/expiring_soon';
 $route['reports/stock-activity']   = 'reports/stock_activity';
 $route['reports/stock_activity']   = 'reports/stock_activity';
 $route['reports/(:any)']           = 'reports/$1';
+
+
+/* Supplier Management */
+$route['suppliers']             = 'suppliers/index';
+$route['suppliers/create']      = 'suppliers/create';
+$route['suppliers/store']       = 'suppliers/store';
+$route['suppliers/edit/(:num)'] = 'suppliers/edit/$1';
+$route['suppliers/update/(:num)'] = 'suppliers/update/$1';
+$route['suppliers/delete/(:num)'] = 'suppliers/delete/$1';
+$route['suppliers/view/(:num)'] = 'suppliers/view/$1';

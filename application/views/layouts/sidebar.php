@@ -95,6 +95,15 @@ $current_menu = isset($active_menu) ? $active_menu : $this->uri->segment(1, 'das
                 <span>Stock History</span>
             </a>
 
+            <!-- 6. Supplier Management -->
+            <a href="<?php echo base_url('suppliers'); ?>" 
+               class="nav-link-custom <?php echo ($current_menu === 'suppliers') ? 'active' : ''; ?>">
+                <span class="nav-icon w-5 text-center text-base">
+                    <i class="fa-solid fa-truck-field"></i>
+                </span>
+                <span>Suppliers</span>
+            </a>
+
             <!-- 6. Expiry Alerts -->
             <a href="<?php echo base_url('expiry'); ?>" 
                class="nav-link-custom <?php echo ($current_menu === 'expiry') ? 'active' : ''; ?>">
